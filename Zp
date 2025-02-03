@@ -1,0 +1,41 @@
+class Zp:
+    def __init__(self, p):
+        self.p = p  # Define el primo p
+
+    def suma(self, a, b):
+        return (a + b) % self.p
+
+    def resta(self, a, b):
+        return (a - b) % self.p
+
+    def multiplicacion(self, a, b):
+        return (a * b) % self.p
+
+    def inverso_multiplicativo(self, b):
+        # Algoritmo extendido de Euclides para encontrar el inverso multiplicativo
+        def extended_gcd(a, b):
+            if b == 0:
+                return a, 1, 0
+            else:
+                gcd, x, y = extended_gcd(b, a % b)
+                return gcd, y, x - (a // b) * y
+
+        gcd, x, y = extended_gcd(b, self.p)
+        if gcd != 1:
+            raise ValueError(f"{b} no tiene inverso multiplicativo en Z_{self.p}")
+        else:
+            return x % self.p
+
+    def division(self, a, b):
+        inv_b = self.inverso_multiplicativo(b)
+        return self.multiplicacion(a, inv_b)
+
+# Ejemplo de uso
+p = 7  # Primo de Mersenne pequeño para ejemplo
+campo = Zp(p)
+
+# Operaciones
+print("Suma:", campo.suma(5, 4))           # 5 + 4 mod 7 = 2
+print("Resta:", campo.resta(3, 5))         # 3 - 5 mod 7 = 5
+print("Multiplicación:", campo.multiplicacion(4, 5))  # 4 * 5 mod 7 = 6
+print("División:", campo.division(4, 3))   # 4 / 3 mod 7 = 6
